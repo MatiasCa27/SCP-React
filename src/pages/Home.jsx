@@ -18,10 +18,6 @@ function Home() {
         <Button onClick={() => navigate('/register')}>
           Register
         </Button>
-
-        <Button onClick={() => navigate('/store')}>
-          Ingresar como Invitado
-        </Button>
       </div>
     </Container>
   );
