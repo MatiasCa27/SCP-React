@@ -1,4 +1,5 @@
-import { Navbar, Nav, Container, Button } from 'react-bootstrap';
+import { Navbar, Nav, Container } from 'react-bootstrap';
+import Button from '../atoms/Button';
 import { Link, useNavigate } from 'react-router-dom';
 
 function NavBar() {
