@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Form, Button } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
+import RegisterForm from '../components/organisms/RegisterForm';
 
 function Register() {
   const navigate = useNavigate();
@@ -34,42 +35,14 @@ function Register() {
   return (
     <Container className="my-5">
       <h1>Registrarse</h1>
-
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label>Usuario</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Ingrese un usuario"
-            value={usuario}
-            onChange={(e) => setUsuario(e.target.value)}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label>Contraseña</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Ingrese una contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Form.Group>
-
-        <Button type="submit">
-          Registrarse
-        </Button>
-
-        <Button
-          variant="secondary"
-          className="ms-2"
-          onClick={() => navigate('/')}
-        >
-          Volver
-        </Button>
-      </Form>
+      <RegisterForm
+        usuario={usuario}
+        password={password}
+        setUsuario={setUsuario}
+        setPassword={setPassword}
+        handleSubmit={handleSubmit}
+        volver={() => navigate('/')}
+      />
     </Container>
   );
 }
