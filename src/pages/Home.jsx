@@ -1,12 +1,30 @@
-import { Container } from 'react-bootstrap';
+import { Container, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
-function Products() {
- return (
-   <Container className="my-5">
-     <h1>Productos</h1>
-     <p>Lista de productos disponibles.</p>
-   </Container>
- );
+function Home() {
+  const navigate = useNavigate();
+
+  return (
+    <Container className="home-container">
+      <div className="home-logo">
+        <h1>Insurgencia del Caos</h1>
+      </div>
+
+      <div className="home-buttons">
+        <Button onClick={() => navigate('/login')}>
+          Log In
+        </Button>
+
+        <Button onClick={() => navigate('/register')}>
+          Register
+        </Button>
+
+        <Button onClick={() => navigate('/store')}>
+          Ingresar como Invitado
+        </Button>
+      </div>
+    </Container>
+  );
 }
 
-export default Products;
+export default Home;
