@@ -6,6 +6,7 @@ function Register() {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState('');
   const [password, setPassword] = useState('');
+  
   const handleSubmit = (e) => {
     e.preventDefault();
 

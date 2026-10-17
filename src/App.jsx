@@ -7,6 +7,7 @@ import ProductDetail from './pages/ProductDetail';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
 import Register from './pages/Register';
+import ProtectedRoute from './components/templates/ProtectedRoute';
 
 function App() {
   const location = useLocation();
@@ -14,14 +15,15 @@ function App() {
   return (
     <>
       {location.pathname !== '/' && <NavBar />}
+
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/store" element={<Store />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/products/:id" element={<ProductDetail />} />
+        <Route path="/products" element={<ProtectedRoute><Products /> </ProtectedRoute>} />
+        <Route path="/products/:id" element={<ProtectedRoute><ProductDetail /> </ProtectedRoute>} />
         <Route path="/login" element={<Login />} />
-        <Route path="/admin" element={<Admin />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/store" element={<ProtectedRoute><Store /> </ProtectedRoute >} />
+        <Route path="/admin" element={<ProtectedRoute rolPermitido="admin"><Admin /> </ProtectedRoute >} />
       </Routes>
     </>
   );
