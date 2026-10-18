@@ -14,10 +14,30 @@ function Admin() {
     image: ''
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(product);
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+
+  const productosGuardados = JSON.parse(localStorage.getItem('productos')) || [];
+
+  const nuevoProducto = {
+    ...product,
+    id: Date.now(),
+    price: Number(product.price)
   };
+
+  productosGuardados.push(nuevoProducto);
+  localStorage.setItem('productos', JSON.stringify(productosGuardados));
+
+  alert('SCP agregado correctamente');
+
+  setProduct({
+    name: '',
+    description: '',
+    price: '',
+    image: ''
+  });
+};
 
   return (
     <Container className="my-5">

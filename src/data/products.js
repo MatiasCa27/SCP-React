@@ -4,6 +4,7 @@ const products = [
    name: 'scp-262',
    description: 'un abrigo de muchos usos.',
    price: 10000,
+   stock: 10,
    image: '/images/scp-262.webp'
  },
  {
@@ -11,6 +12,7 @@ const products = [
    name: 'scp-268',
    description: 'Gorra de negligencia.',
    price: 10000,
+   stock: 30,
    image: '/images/scp-268.webp'
  },
  {
@@ -18,7 +20,8 @@ const products = [
    name: 'scp-311',
    description: 'guantes tácticos',
    price: 10000,
-   image: '/images/scp-311.webp'
+   stock: 20,
+   image: '/images/scp-311.webp'  
  }
 ];
 
