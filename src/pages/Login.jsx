@@ -25,7 +25,7 @@ function Login() {
   if (usuarioEncontrado) {
     sessionStorage.setItem('usuario', usuario);
     sessionStorage.setItem('rol', 'usuario');
-    navigate('/store');
+    navigate('/products');
   } else {
     alert('Usuario o contraseña incorrectos');
   }

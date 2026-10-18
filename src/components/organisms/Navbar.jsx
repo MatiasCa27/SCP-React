@@ -15,11 +15,10 @@ function NavBar() {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container>
-        <Navbar.Brand as={Link} to="/store">Insurgencia del Caos</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/products">Insurgencia del Caos</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/store">Inicio</Nav.Link>
             <Nav.Link as={Link} to="/products">Productos</Nav.Link>
             {rol === 'admin' && <Nav.Link as={Link} to="/admin">Administración</Nav.Link>}
           </Nav>
