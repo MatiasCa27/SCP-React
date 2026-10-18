@@ -75,10 +75,12 @@ function Products() {
 
       guardarStock(productosActualizados);
       alert('SCP actualizado correctamente');
+   
     } else {
+      const nuevoId = Math.max(0, ...products.map((product) => product.id), ...listaProductos.map((product) => product.id)) + 1;
       const productoAgregado = {
         ...nuevoProducto,
-        id: Date.now(),
+        id: nuevoId,
         price: precio,
         stock
       };
