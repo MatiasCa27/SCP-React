@@ -41,7 +41,7 @@
     padding: 12px 10px;
   }
 
-  .scp-main {
+  .scp-app-layout:has(.scp-navbar) .scp-main {
     padding-top: 65px;
   }
 
