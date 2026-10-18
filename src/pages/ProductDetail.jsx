@@ -36,7 +36,7 @@ function ProductDetail() {
         <div className="scp-detail-info">
           <CardBody
             title={producto.name}
-            description={producto.description}
+            description={producto.longDescription || producto.description}
             price={producto.price}
             stock={producto.stock}
           />
