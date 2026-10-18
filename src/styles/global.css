@@ -9,3 +9,14 @@ body {
 #root {
   min-height: 100vh;
 }
+
+.scp-app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.scp-main {
+  flex: 1;
+  width: 100%;
+}

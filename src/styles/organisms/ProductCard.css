@@ -47,3 +47,17 @@
 .scp-card .scp-button {
   border-radius: 4px;
 }
+
+.scp-card .card-body {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+}
+
+.scp-card .scp-card-body {
+  min-height: 150px;
+}
+
+.scp-card .scp-card-body p {
+  margin-bottom: 10px;
+}

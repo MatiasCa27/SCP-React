@@ -241,6 +241,7 @@ function Products() {
     setNuevoProducto({
       name: '',
       description: '',
+      longDescription: '',
       price: '',
       stock: '',
       image: ''
@@ -276,6 +277,7 @@ function Products() {
         show={mostrarFormulario && rol === 'admin'}
         onHide={cerrarFormulario}
         centered
+        scrollable
         className="scp-product-modal"
       >
         <Modal.Header closeButton>

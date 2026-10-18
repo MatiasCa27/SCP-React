@@ -23,3 +23,22 @@
 .scp-page a:hover {
   color: #aaaaaa;
 }
+
+.scp-home-logo {
+  display: block;
+  width: 200px;
+  max-width: 80%;
+  height: auto;
+  margin: 0 auto 25px;
+  object-fit: contain;
+}
+
+.scp-home-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.scp-home-layout .scp-page {
+  flex: 1;
+}

@@ -1,0 +1,51 @@
+.scp-header,
+.scp-footer {
+  background-color: #000000;
+  color: #ffffff;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: center;
+  padding: 20px;
+}
+
+.scp-header {
+  border-bottom: 1px solid #ffffff;
+}
+
+.scp-header h2 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 20px;
+}
+
+
+.scp-footer {
+  background-color: #000000;
+  border-top: 1px solid #888888;
+  padding: 12px 20px;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.scp-footer-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.scp-footer-links a {
+  color: #aaaaaa;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.scp-footer-links a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.scp-contact-pending {
+  color: #aaaaaa;
+  font-size: 14px;
+}
