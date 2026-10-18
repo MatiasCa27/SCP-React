@@ -4,11 +4,11 @@
   color: #ffffff;
   font-family: 'Courier New', Courier, monospace;
   text-align: center;
-  padding: 20px;
 }
 
 .scp-header {
   border-bottom: 1px solid #ffffff;
+  padding: 20px;
 }
 
 .scp-header h2 {
@@ -17,13 +17,11 @@
   font-size: 20px;
 }
 
-
 .scp-footer {
-  background-color: #000000;
+  width: 100%;
   border-top: 1px solid #888888;
   padding: 12px 20px;
-  text-align: center;
-  font-family: 'Courier New', Courier, monospace;
+  flex-shrink: 0;
 }
 
 .scp-footer-links {
@@ -45,12 +43,7 @@
   text-decoration: underline;
 }
 
-.scp-contact-pending {
-  color: #aaaaaa;
-  font-size: 14px;
-}
-
-@media screen and (max-width: 600px) {
+@media (max-width: 600px) {
   .scp-header {
     display: flex;
     flex-direction: column;
@@ -62,7 +55,6 @@
 
   .scp-header h2 {
     font-size: 16px;
-    text-align: center;
   }
 
   .scp-footer {
@@ -70,8 +62,6 @@
   }
 
   .scp-footer-links {
-    flex-wrap: wrap;
-    justify-content: center;
     gap: 10px 18px;
   }
 

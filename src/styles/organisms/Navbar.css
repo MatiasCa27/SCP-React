@@ -33,8 +33,17 @@
 }
 
 @media (max-width: 991px) {
-  .scp-navbar {
+  .scp-navbar.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1030;
     padding: 12px 10px;
+  }
+
+  .scp-main {
+    padding-top: 65px;
   }
 
   .scp-navbar .navbar-brand {

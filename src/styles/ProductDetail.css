@@ -18,18 +18,40 @@
 
 .scp-detail-info {
   flex: 1;
+  min-width: 0;
   color: #ffffff;
+  overflow-wrap: break-word;
 }
 
 @media (max-width: 768px) {
   .scp-detail {
     flex-direction: column;
     align-items: stretch;
+    gap: 20px;
+    padding: 20px;
   }
 
   .scp-detail-image {
     width: 100%;
-    max-width: 300px;
+    max-width: 280px;
+    height: 280px;
     margin: 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .scp-detail {
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .scp-detail-image {
+    max-width: 240px;
+    height: 240px;
+  }
+
+  .scp-detail-info {
+    font-size: 14px;
+    line-height: 1.6;
   }
 }
