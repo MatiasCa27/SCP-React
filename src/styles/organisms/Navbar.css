@@ -24,9 +24,47 @@
 }
 
 .scp-navbar .navbar-toggler {
-  border-color: #888888;
+  border: 1px solid #888888;
+  padding: 6px 10px;
 }
 
 .scp-navbar .navbar-toggler-icon {
-  filter: invert(1);
+  filter: none;
+}
+
+@media (max-width: 991px) {
+  .scp-navbar {
+    padding: 12px 10px;
+  }
+
+  .scp-navbar .navbar-brand {
+    font-size: 16px;
+    white-space: normal;
+    max-width: calc(100% - 65px);
+  }
+
+  .scp-navbar .navbar-collapse {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #444444;
+  }
+
+  .scp-navbar .nav-link {
+    padding: 10px 0;
+  }
+
+  .scp-navbar .navbar-collapse button {
+    margin-top: 10px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .scp-navbar .navbar-brand {
+    font-size: 14px;
+  }
+
+  .scp-navbar .navbar-toggler {
+    padding: 4px 8px;
+  }
 }

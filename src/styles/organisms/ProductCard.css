@@ -61,3 +61,32 @@
 .scp-card .scp-card-body p {
   margin-bottom: 10px;
 }
+
+@media (max-width: 768px) {
+  .scp-card {
+    width: calc(50% - 16px) !important;
+    margin: 8px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .scp-card {
+    width: 100% !important;
+    max-width: 100%;
+    margin: 8px 0 !important;
+  }
+
+  .scp-card .card-body {
+    padding: 16px;
+  }
+
+  .scp-card .card-img-top {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+  }
+
+  .scp-card button {
+    font-size: 14px;
+  }
+}

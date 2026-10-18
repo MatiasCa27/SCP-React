@@ -42,3 +42,21 @@
 .scp-home-layout .scp-page {
   flex: 1;
 }
+
+@media (max-width: 480px) {
+  .scp-page {
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .scp-page h1 {
+    font-size: 26px;
+    margin-bottom: 20px;
+  }
+
+  .scp-page .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
