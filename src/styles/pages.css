@@ -1,0 +1,25 @@
+.scp-page {
+  color: #ffffff;
+  font-family: 'Courier New', Courier, monospace;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.scp-page h1,
+.scp-page h2 {
+  color: #ffffff;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.scp-page p {
+  color: #cccccc;
+}
+
+.scp-page a {
+  color: #ffffff;
+}
+
+.scp-page a:hover {
+  color: #aaaaaa;
+}

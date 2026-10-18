@@ -251,7 +251,7 @@ function Products() {
   };
 
   return (
-    <Container className="my-5">
+    <Container className="my-5 scp-page">
       <h1>Productos</h1>
 
       {rol === 'admin' && (

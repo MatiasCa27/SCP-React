@@ -6,20 +6,18 @@ function Home() {
   const navigate = useNavigate();
 
   return (
-    <Container className="home-container">
-      <div className="home-logo">
-        <h1>Insurgencia del Caos</h1>
-      </div>
+    <Container className="my-5 text-center scp-page">
+      <h1>Insurgencia del Caos</h1>
 
-      <div className="home-buttons">
-        <Button onClick={() => navigate('/login')}>
-          Log In
-        </Button>
+      <Button onClick={() => navigate('/login')}>
+        Iniciar sesión
+      </Button>
 
-        <Button onClick={() => navigate('/register')}>
-          Register
-        </Button>
-      </div>
+      {' '}
+
+      <Button onClick={() => navigate('/register')}>
+        Registrarse
+      </Button>
     </Container>
   );
 }

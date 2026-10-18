@@ -1,37 +1,37 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import RegisterForm from '../components/organisms/RegisterForm';
 
 function Register() {
   const navigate = useNavigate();
-  const [usuario, setUsuario] = useState('');
-  const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleRegister = (username, password) => {
+    const nombreUsuario = username.trim();
 
-    const nombreUsuario = usuario.trim();
-
-    if (!nombreUsuario) {
-      alert('Ingrese un nombre de usuario válido');
+    if (!nombreUsuario || !password) {
+      alert('Completa todos los campos');
       return;
     }
 
     const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-    const existe = usuarios.some((u) => u.usuario === nombreUsuario) || nombreUsuario === 'admin';
 
-    if (existe) {
-      alert('Este usuario ya existe');
+    const existeUsuario =
+      nombreUsuario.toLowerCase() === 'admin' ||
+      usuarios.some(
+        (usuario) =>
+          usuario.username.toLowerCase() === nombreUsuario.toLowerCase()
+      );
+
+    if (existeUsuario) {
+      alert('El nombre de usuario ya existe');
       return;
     }
 
-    const nuevoUsuario = {
-      usuario: nombreUsuario,
-      password: password
-    };
+    usuarios.push({
+      username: nombreUsuario,
+      password
+    });
 
-    usuarios.push(nuevoUsuario);
     localStorage.setItem('usuarios', JSON.stringify(usuarios));
 
     alert('Usuario registrado correctamente');
@@ -39,16 +39,9 @@ function Register() {
   };
 
   return (
-    <Container className="my-5">
+    <Container className="my-5 scp-page">
       <h1>Registrarse</h1>
-      <RegisterForm
-        usuario={usuario}
-        password={password}
-        setUsuario={setUsuario}
-        setPassword={setPassword}
-        handleSubmit={handleSubmit}
-        volver={() => navigate('/')}
-      />
+      <RegisterForm handleRegister={handleRegister} />
     </Container>
   );
 }

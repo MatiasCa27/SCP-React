@@ -1,0 +1,20 @@
+.scp-auth-form {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  padding: 25px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.scp-auth-form label {
+  color: #ffffff;
+  margin-bottom: 5px;
+}
+
+.scp-auth-form .form-control {
+  margin-bottom: 10px;
+}
+
+.scp-auth-form button {
+  margin-top: 10px;
+}

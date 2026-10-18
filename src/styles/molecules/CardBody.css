@@ -1,0 +1,18 @@
+.scp-card-body {
+  color: #ffffff;
+}
+
+.scp-card-body h1,
+.scp-card-body h2,
+.scp-card-body h3,
+.scp-card-body h4,
+.scp-card-body h5,
+.scp-card-body p {
+  color: #ffffff;
+}
+
+.scp-card-body .scp-price {
+  color: #cccccc;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
