@@ -1,7 +1,7 @@
 import { Form } from 'react-bootstrap';
 import FormField from '../molecules/FormField';
-import Button from '../atoms/Button';
 import PasswordField from '../molecules/PasswordField';
+import Button from '../atoms/Button';
 import '../../styles/organisms/AuthForm.css';
 
 function RegisterForm({ usuario, password, setUsuario, setPassword, handleSubmit, volver }) {

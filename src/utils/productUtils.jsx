@@ -1,4 +1,4 @@
-import products from '../data/Products';
+import products from '../data/products';
 
 export function obtenerProductos() {
   const productosGuardados = JSON.parse(localStorage.getItem('productos')) || [];

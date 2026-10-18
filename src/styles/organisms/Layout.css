@@ -49,3 +49,33 @@
   color: #aaaaaa;
   font-size: 14px;
 }
+
+@media screen and (max-width: 600px) {
+  .scp-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .scp-header h2 {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .scp-footer {
+    padding: 12px;
+  }
+
+  .scp-footer-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 18px;
+  }
+
+  .scp-footer-links a {
+    font-size: 12px;
+  }
+}

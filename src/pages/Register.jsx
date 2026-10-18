@@ -1,37 +1,45 @@
+import { useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import RegisterForm from '../components/organisms/RegisterForm';
 
 function Register() {
   const navigate = useNavigate();
+  const [usuario, setUsuario] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleRegister = (username, password) => {
-    const nombreUsuario = username.trim();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    if (!nombreUsuario || !password) {
+    const nombreUsuario = usuario.trim();
+
+    if (!nombreUsuario || !password.trim()) {
       alert('Completa todos los campos');
       return;
     }
 
-    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+    let usuarios;
 
-    const existeUsuario =
-      nombreUsuario.toLowerCase() === 'admin' ||
-      usuarios.some(
-        (usuario) =>
-          usuario.username.toLowerCase() === nombreUsuario.toLowerCase()
-      );
+    try {
+      const datos = JSON.parse(localStorage.getItem('usuarios'));
+      usuarios = Array.isArray(datos) ? datos : [];
+    } catch {
+      usuarios = [];
+    }
+
+    const existeUsuario = nombreUsuario.toLowerCase() === 'admin' ||
+      usuarios.some((item) => {
+        const nombreGuardado = item?.username ?? item?.usuario;
+        return typeof nombreGuardado === 'string' &&
+          nombreGuardado.toLowerCase() === nombreUsuario.toLowerCase();
+      });
 
     if (existeUsuario) {
       alert('El nombre de usuario ya existe');
       return;
     }
 
-    usuarios.push({
-      username: nombreUsuario,
-      password
-    });
-
+    usuarios.push({ username: nombreUsuario, password });
     localStorage.setItem('usuarios', JSON.stringify(usuarios));
 
     alert('Usuario registrado correctamente');
@@ -41,7 +49,14 @@ function Register() {
   return (
     <Container className="my-5 scp-page">
       <h1>Registrarse</h1>
-      <RegisterForm handleRegister={handleRegister} />
+      <RegisterForm
+        usuario={usuario}
+        password={password}
+        setUsuario={setUsuario}
+        setPassword={setPassword}
+        handleSubmit={handleSubmit}
+        volver={() => navigate('/')}
+      />
     </Container>
   );
 }

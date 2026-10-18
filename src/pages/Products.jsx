@@ -1,6 +1,6 @@
 import { Container, Row, Modal } from 'react-bootstrap';
 import { useState } from 'react';
-import products from '../data/Products';
+import products from '../data/products';
 import ProductCard from '../components/organisms/ProductCard';
 import Button from '../components/atoms/Button';
 import ProductForm from '../components/organisms/ProductForm';
@@ -9,26 +9,26 @@ import '../styles/organisms/ProductModal.css';
 
 function Products() {
   const [listaProductos, setListaProductos] = useState(obtenerProductos);
-  const rol = sessionStorage.getItem('rol');
-
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
-
   const [nuevoProducto, setNuevoProducto] = useState({
     name: '',
     description: '',
+    longDescription: '',
     price: '',
     stock: '',
     image: ''
   });
 
+  const rol = sessionStorage.getItem('rol');
+
   const cerrarFormulario = () => {
     setMostrarFormulario(false);
     setProductoEditando(null);
-
     setNuevoProducto({
       name: '',
       description: '',
+      longDescription: '',
       price: '',
       stock: '',
       image: ''
@@ -37,7 +37,6 @@ function Products() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (rol !== 'admin') return;
 
     if (
@@ -61,58 +60,29 @@ function Products() {
       };
 
       const productosActualizados = listaProductos.map((product) =>
-        product.id === productoEditando
-          ? productoActualizado
-          : product
+        product.id === productoEditando ? productoActualizado : product
       );
 
       setListaProductos(productosActualizados);
 
       if (products.some((product) => product.id === productoEditando)) {
-        const productosEditados =
-          JSON.parse(localStorage.getItem('productosEditados')) || [];
+        const productosEditados = JSON.parse(localStorage.getItem('productosEditados')) || [];
+        const otrosEditados = productosEditados.filter((product) => product.id !== productoEditando);
+        localStorage.setItem('productosEditados', JSON.stringify([...otrosEditados, productoActualizado]));
 
-        const otrosEditados = productosEditados.filter(
-          (product) => product.id !== productoEditando
-        );
-
-        localStorage.setItem(
-          'productosEditados',
-          JSON.stringify([...otrosEditados, productoActualizado])
-        );
-
-        const stockOriginales =
-          JSON.parse(localStorage.getItem('stockOriginales')) || [];
-
-        const otrosStocks = stockOriginales.filter(
-          (item) => item.id !== productoEditando
-        );
-
-        localStorage.setItem(
-          'stockOriginales',
-          JSON.stringify([
-            ...otrosStocks,
-            {
-              id: productoEditando,
-              stock: productoActualizado.stock
-            }
-          ])
-        );
+        const stockOriginales = JSON.parse(localStorage.getItem('stockOriginales')) || [];
+        const otrosStocks = stockOriginales.filter((item) => item.id !== productoEditando);
+        localStorage.setItem('stockOriginales', JSON.stringify([
+          ...otrosStocks,
+          { id: productoEditando, stock: productoActualizado.stock }
+        ]));
       } else {
-        const productosGuardados =
-          JSON.parse(localStorage.getItem('productos')) || [];
-
-        const productosActualizadosGuardados = productosGuardados.map(
-          (product) =>
-            product.id === productoEditando
-              ? productoActualizado
-              : product
-        );
-
-        localStorage.setItem(
-          'productos',
-          JSON.stringify(productosActualizadosGuardados)
-        );
+        const productosGuardados = JSON.parse(localStorage.getItem('productos')) || [];
+        localStorage.setItem('productos', JSON.stringify(
+          productosGuardados.map((product) =>
+            product.id === productoEditando ? productoActualizado : product
+          )
+        ));
       }
 
       alert('SCP actualizado correctamente');
@@ -124,112 +94,80 @@ function Products() {
         stock: Number(nuevoProducto.stock)
       };
 
-      const productosGuardados =
-        JSON.parse(localStorage.getItem('productos')) || [];
-
-      productosGuardados.push(productoAgregado);
-
-      localStorage.setItem(
-        'productos',
-        JSON.stringify(productosGuardados)
-      );
-
+      const productosGuardados = JSON.parse(localStorage.getItem('productos')) || [];
+      localStorage.setItem('productos', JSON.stringify([...productosGuardados, productoAgregado]));
       setListaProductos([...listaProductos, productoAgregado]);
-
       alert('SCP agregado correctamente');
     }
 
     cerrarFormulario();
   };
 
-  const cambiarStock = (id, cantidad) => {
-    if (rol !== 'admin') return;
-
-    const productosActualizados = listaProductos.map((product) => {
-      if (product.id === id) {
-        return {
-          ...product,
-          stock: Math.max(0, (product.stock ?? 0) + cantidad)
-        };
-      }
-
-      return product;
-    });
-
-    setListaProductos(productosActualizados);
-
+  const guardarStock = (productosActualizados) => {
     const productosGuardados = productosActualizados.filter(
-      (product) =>
-        !products.some((original) => original.id === product.id)
-    );
-
-    localStorage.setItem(
-      'productos',
-      JSON.stringify(productosGuardados)
+      (product) => !products.some((original) => original.id === product.id)
     );
 
     const stockOriginales = productosActualizados
-      .filter((product) =>
-        products.some((original) => original.id === product.id)
-      )
-      .map((product) => ({
-        id: product.id,
-        stock: product.stock
-      }));
+      .filter((product) => products.some((original) => original.id === product.id))
+      .map((product) => ({ id: product.id, stock: product.stock }));
 
-    localStorage.setItem(
-      'stockOriginales',
-      JSON.stringify(stockOriginales)
+    localStorage.setItem('productos', JSON.stringify(productosGuardados));
+    localStorage.setItem('stockOriginales', JSON.stringify(stockOriginales));
+    setListaProductos(productosActualizados);
+  };
+
+  const cambiarStock = (id, cantidad) => {
+    if (rol !== 'admin') return;
+
+    const productosActualizados = listaProductos.map((product) =>
+      product.id === id
+        ? { ...product, stock: Math.max(0, (product.stock ?? 0) + cantidad) }
+        : product
     );
+
+    guardarStock(productosActualizados);
+  };
+
+  const comprarProducto = (id) => {
+    if (rol !== 'usuario' || !sessionStorage.getItem('usuario')) return;
+
+    const producto = listaProductos.find((product) => product.id === id);
+    if (!producto || producto.stock <= 0) return;
+
+    const productosActualizados = listaProductos.map((product) =>
+      product.id === id
+        ? { ...product, stock: product.stock - 1 }
+        : product
+    );
+
+    guardarStock(productosActualizados);
+    alert('Producto comprado exitosamente');
   };
 
   const eliminarProducto = (id) => {
     if (rol !== 'admin') return;
+    if (!window.confirm('¿Estás seguro de eliminar este SCP?')) return;
 
-    const confirmar = window.confirm(
-      '¿Estás seguro de eliminar este SCP?'
-    );
-
-    if (!confirmar) return;
-
-    const productosActualizados = listaProductos.filter(
-      (product) => product.id !== id
-    );
-
+    const productosActualizados = listaProductos.filter((product) => product.id !== id);
     setListaProductos(productosActualizados);
 
     const productosGuardados = productosActualizados.filter(
-      (product) =>
-        !products.some((original) => original.id === product.id)
+      (product) => !products.some((original) => original.id === product.id)
     );
 
-    localStorage.setItem(
-      'productos',
-      JSON.stringify(productosGuardados)
-    );
+    localStorage.setItem('productos', JSON.stringify(productosGuardados));
 
-    const eliminados =
-      JSON.parse(localStorage.getItem('productosEliminados')) || [];
-
-    if (products.some((product) => product.id === id)) {
-      if (!eliminados.includes(id)) {
-        eliminados.push(id);
-      }
-
-      localStorage.setItem(
-        'productosEliminados',
-        JSON.stringify(eliminados)
-      );
+    const eliminados = JSON.parse(localStorage.getItem('productosEliminados')) || [];
+    if (products.some((product) => product.id === id) && !eliminados.includes(id)) {
+      localStorage.setItem('productosEliminados', JSON.stringify([...eliminados, id]));
     }
 
-    if (productoEditando === id) {
-      cerrarFormulario();
-    }
+    if (productoEditando === id) cerrarFormulario();
   };
 
   const editarProducto = (product) => {
     if (rol !== 'admin') return;
-
     setNuevoProducto({ ...product });
     setProductoEditando(product.id);
     setMostrarFormulario(true);
@@ -237,7 +175,6 @@ function Products() {
 
   const agregarProducto = () => {
     if (rol !== 'admin') return;
-
     setNuevoProducto({
       name: '',
       description: '',
@@ -246,7 +183,6 @@ function Products() {
       stock: '',
       image: ''
     });
-
     setProductoEditando(null);
     setMostrarFormulario(true);
   };
@@ -256,9 +192,7 @@ function Products() {
       <h1>Productos</h1>
 
       {rol === 'admin' && (
-        <Button onClick={agregarProducto}>
-          + Agregar SCP
-        </Button>
+        <Button onClick={agregarProducto}>+ Agregar SCP</Button>
       )}
 
       <Row>
@@ -269,6 +203,7 @@ function Products() {
             cambiarStock={cambiarStock}
             eliminarProducto={eliminarProducto}
             editarProducto={editarProducto}
+            comprarProducto={comprarProducto}
           />
         ))}
       </Row>
@@ -281,13 +216,8 @@ function Products() {
         className="scp-product-modal"
       >
         <Modal.Header closeButton>
-          <Modal.Title>
-            {productoEditando !== null
-              ? 'Editar SCP'
-              : 'Agregar SCP'}
-          </Modal.Title>
+          <Modal.Title>{productoEditando !== null ? 'Editar SCP' : 'Agregar SCP'}</Modal.Title>
         </Modal.Header>
-
         <Modal.Body>
           <ProductForm
             product={nuevoProducto}
