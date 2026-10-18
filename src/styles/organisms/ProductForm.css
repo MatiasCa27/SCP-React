@@ -1,11 +1,9 @@
 .scp-product-form {
   background-color: #000000;
   color: #ffffff;
-  font-family: 'Courier New', Courier, monospace;
 }
 
 .scp-product-form label {
-  color: #ffffff;
   margin-bottom: 5px;
 }
 

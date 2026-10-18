@@ -3,12 +3,10 @@
   color: #ffffff;
   border: 1px solid #ffffff;
   padding: 25px;
-  font-family: 'Courier New', Courier, monospace;
   width: 100%;
 }
 
 .scp-auth-form label {
-  color: #ffffff;
   margin-bottom: 5px;
 }
 
@@ -60,7 +58,6 @@
   }
 
   .scp-password-field button {
-    margin: 0;
     white-space: nowrap;
   }
 }
