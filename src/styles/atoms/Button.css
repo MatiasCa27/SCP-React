@@ -1,0 +1,24 @@
+.scp-button.btn {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 10px 20px;
+  transition: background-color 0.2s;
+}
+
+.scp-button.btn:hover,
+.scp-button.btn:focus,
+.scp-button.btn:active {
+  background-color: #333333;
+  color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: none;
+}
+
+.scp-button.btn:disabled {
+  background-color: #333333;
+  color: #888888;
+  border-color: #888888;
+}

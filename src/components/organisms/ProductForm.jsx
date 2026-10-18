@@ -1,6 +1,7 @@
 import { Form } from 'react-bootstrap';
 import FormField from '../molecules/FormField';
 import Button from '../atoms/Button';
+import '../../styles/organisms/ProductForm.css';
 
 function ProductForm({ product, setProduct, handleSubmit }) {
   const handleChange = (e) => {
@@ -8,7 +9,7 @@ function ProductForm({ product, setProduct, handleSubmit }) {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} className="scp-product-form">
       <FormField label="Nombre del SCP" name="name" value={product.name} onChange={handleChange} required />
       <FormField label="Descripción" name="description" value={product.description} onChange={handleChange} required />
       <FormField label="Precio" type="number" name="price" min="1" value={product.price} onChange={handleChange} required />

@@ -1,0 +1,22 @@
+.scp-input {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #888888;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.scp-input:focus {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: none;
+}
+
+.scp-input::placeholder {
+  color: #888888;
+}
+
+.scp-input:disabled {
+  background-color: #333333;
+  color: #888888;
+}

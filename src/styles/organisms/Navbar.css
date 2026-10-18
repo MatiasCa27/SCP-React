@@ -1,0 +1,32 @@
+.scp-navbar {
+  background-color: #000000;
+  border-bottom: 1px solid #ffffff;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 15px 20px;
+}
+
+.scp-navbar .navbar-brand {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.scp-navbar .navbar-brand:hover {
+  color: #cccccc;
+}
+
+.scp-navbar .nav-link {
+  color: #ffffff;
+}
+
+.scp-navbar .nav-link:hover,
+.scp-navbar .nav-link:focus {
+  color: #aaaaaa;
+}
+
+.scp-navbar .navbar-toggler {
+  border-color: #888888;
+}
+
+.scp-navbar .navbar-toggler-icon {
+  filter: invert(1);
+}

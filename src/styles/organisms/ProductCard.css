@@ -1,0 +1,33 @@
+.scp-card {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 0;
+  font-family: 'Courier New', Courier, monospace;
+  height: 100%;
+}
+
+.scp-card .card-body {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.scp-card .card-title {
+  color: #ffffff;
+}
+
+.scp-card .card-text {
+  color: #cccccc;
+}
+
+.scp-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: contain;
+  background-color: #111111;
+  padding: 10px;
+}
+
+.scp-card:hover {
+  border-color: #888888;
+}

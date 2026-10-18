@@ -5,25 +5,49 @@ import ProductCard from '../components/organisms/ProductCard';
 import Button from '../components/atoms/Button';
 import ProductForm from '../components/organisms/ProductForm';
 import { obtenerProductos } from '../utils/productUtils';
+import '../styles/organisms/ProductModal.css';
 
 function Products() {
   const [listaProductos, setListaProductos] = useState(obtenerProductos);
   const rol = sessionStorage.getItem('rol');
+
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
-  const [nuevoProducto, setNuevoProducto] = useState({ name: '', description: '', price: '', stock: '', image: '' });
+
+  const [nuevoProducto, setNuevoProducto] = useState({
+    name: '',
+    description: '',
+    price: '',
+    stock: '',
+    image: ''
+  });
 
   const cerrarFormulario = () => {
     setMostrarFormulario(false);
     setProductoEditando(null);
-    setNuevoProducto({ name: '', description: '', price: '', stock: '', image: '' });
+
+    setNuevoProducto({
+      name: '',
+      description: '',
+      price: '',
+      stock: '',
+      image: ''
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (rol !== 'admin') return;
 
-    if (nuevoProducto.price === '' || nuevoProducto.stock === '' || !Number.isFinite(Number(nuevoProducto.price)) || !Number.isFinite(Number(nuevoProducto.stock)) || Number(nuevoProducto.price) <= 0 || Number(nuevoProducto.stock) < 0) {
+    if (
+      nuevoProducto.price === '' ||
+      nuevoProducto.stock === '' ||
+      !Number.isFinite(Number(nuevoProducto.price)) ||
+      !Number.isFinite(Number(nuevoProducto.stock)) ||
+      Number(nuevoProducto.price) <= 0 ||
+      Number(nuevoProducto.stock) < 0
+    ) {
       alert('El precio debe ser mayor que 0 y el stock no puede ser negativo');
       return;
     }
@@ -37,28 +61,60 @@ function Products() {
       };
 
       const productosActualizados = listaProductos.map((product) =>
-        product.id === productoEditando ? productoActualizado : product
+        product.id === productoEditando
+          ? productoActualizado
+          : product
       );
+
       setListaProductos(productosActualizados);
 
       if (products.some((product) => product.id === productoEditando)) {
-        const productosEditados = JSON.parse(localStorage.getItem('productosEditados')) || [];
-        const otrosEditados = productosEditados.filter((product) => product.id !== productoEditando);
-        localStorage.setItem('productosEditados', JSON.stringify([...otrosEditados, productoActualizado]));
+        const productosEditados =
+          JSON.parse(localStorage.getItem('productosEditados')) || [];
 
-        const stockOriginales = JSON.parse(localStorage.getItem('stockOriginales')) || [];
-        const otrosStocks = stockOriginales.filter((item) => item.id !== productoEditando);
-        localStorage.setItem('stockOriginales', JSON.stringify([
-          ...otrosStocks,
-          { id: productoEditando, stock: productoActualizado.stock }
-        ]));
-      } else {
-        const productosGuardados = JSON.parse(localStorage.getItem('productos')) || [];
-        const productosActualizadosGuardados = productosGuardados.map((product) =>
-          product.id === productoEditando ? productoActualizado : product
+        const otrosEditados = productosEditados.filter(
+          (product) => product.id !== productoEditando
         );
-        localStorage.setItem('productos', JSON.stringify(productosActualizadosGuardados));
+
+        localStorage.setItem(
+          'productosEditados',
+          JSON.stringify([...otrosEditados, productoActualizado])
+        );
+
+        const stockOriginales =
+          JSON.parse(localStorage.getItem('stockOriginales')) || [];
+
+        const otrosStocks = stockOriginales.filter(
+          (item) => item.id !== productoEditando
+        );
+
+        localStorage.setItem(
+          'stockOriginales',
+          JSON.stringify([
+            ...otrosStocks,
+            {
+              id: productoEditando,
+              stock: productoActualizado.stock
+            }
+          ])
+        );
+      } else {
+        const productosGuardados =
+          JSON.parse(localStorage.getItem('productos')) || [];
+
+        const productosActualizadosGuardados = productosGuardados.map(
+          (product) =>
+            product.id === productoEditando
+              ? productoActualizado
+              : product
+        );
+
+        localStorage.setItem(
+          'productos',
+          JSON.stringify(productosActualizadosGuardados)
+        );
       }
+
       alert('SCP actualizado correctamente');
     } else {
       const productoAgregado = {
@@ -68,10 +124,18 @@ function Products() {
         stock: Number(nuevoProducto.stock)
       };
 
-      const productosGuardados = JSON.parse(localStorage.getItem('productos')) || [];
+      const productosGuardados =
+        JSON.parse(localStorage.getItem('productos')) || [];
+
       productosGuardados.push(productoAgregado);
-      localStorage.setItem('productos', JSON.stringify(productosGuardados));
+
+      localStorage.setItem(
+        'productos',
+        JSON.stringify(productosGuardados)
+      );
+
       setListaProductos([...listaProductos, productoAgregado]);
+
       alert('SCP agregado correctamente');
     }
 
@@ -88,44 +152,74 @@ function Products() {
           stock: Math.max(0, (product.stock ?? 0) + cantidad)
         };
       }
+
       return product;
     });
 
     setListaProductos(productosActualizados);
 
-    const productosGuardados = productosActualizados.filter((product) =>
-      !products.some((original) => original.id === product.id)
+    const productosGuardados = productosActualizados.filter(
+      (product) =>
+        !products.some((original) => original.id === product.id)
     );
-    localStorage.setItem('productos', JSON.stringify(productosGuardados));
+
+    localStorage.setItem(
+      'productos',
+      JSON.stringify(productosGuardados)
+    );
 
     const stockOriginales = productosActualizados
-      .filter((product) => products.some((original) => original.id === product.id))
+      .filter((product) =>
+        products.some((original) => original.id === product.id)
+      )
       .map((product) => ({
         id: product.id,
         stock: product.stock
       }));
-    localStorage.setItem('stockOriginales', JSON.stringify(stockOriginales));
+
+    localStorage.setItem(
+      'stockOriginales',
+      JSON.stringify(stockOriginales)
+    );
   };
 
   const eliminarProducto = (id) => {
     if (rol !== 'admin') return;
-    const confirmar = window.confirm('¿Estás seguro de eliminar este SCP?');
+
+    const confirmar = window.confirm(
+      '¿Estás seguro de eliminar este SCP?'
+    );
+
     if (!confirmar) return;
 
-    const productosActualizados = listaProductos.filter((product) => product.id !== id);
+    const productosActualizados = listaProductos.filter(
+      (product) => product.id !== id
+    );
+
     setListaProductos(productosActualizados);
 
-    const productosGuardados = productosActualizados.filter((product) =>
-      !products.some((original) => original.id === product.id)
+    const productosGuardados = productosActualizados.filter(
+      (product) =>
+        !products.some((original) => original.id === product.id)
     );
-    localStorage.setItem('productos', JSON.stringify(productosGuardados));
 
-    const eliminados = JSON.parse(localStorage.getItem('productosEliminados')) || [];
+    localStorage.setItem(
+      'productos',
+      JSON.stringify(productosGuardados)
+    );
+
+    const eliminados =
+      JSON.parse(localStorage.getItem('productosEliminados')) || [];
+
     if (products.some((product) => product.id === id)) {
       if (!eliminados.includes(id)) {
         eliminados.push(id);
       }
-      localStorage.setItem('productosEliminados', JSON.stringify(eliminados));
+
+      localStorage.setItem(
+        'productosEliminados',
+        JSON.stringify(eliminados)
+      );
     }
 
     if (productoEditando === id) {
@@ -135,6 +229,7 @@ function Products() {
 
   const editarProducto = (product) => {
     if (rol !== 'admin') return;
+
     setNuevoProducto({ ...product });
     setProductoEditando(product.id);
     setMostrarFormulario(true);
@@ -142,7 +237,15 @@ function Products() {
 
   const agregarProducto = () => {
     if (rol !== 'admin') return;
-    setNuevoProducto({ name: '', description: '', price: '', stock: '', image: '' });
+
+    setNuevoProducto({
+      name: '',
+      description: '',
+      price: '',
+      stock: '',
+      image: ''
+    });
+
     setProductoEditando(null);
     setMostrarFormulario(true);
   };
@@ -150,8 +253,11 @@ function Products() {
   return (
     <Container className="my-5">
       <h1>Productos</h1>
+
       {rol === 'admin' && (
-        <Button onClick={agregarProducto}>+ Agregar SCP</Button>
+        <Button onClick={agregarProducto}>
+          + Agregar SCP
+        </Button>
       )}
 
       <Row>
@@ -166,10 +272,20 @@ function Products() {
         ))}
       </Row>
 
-      <Modal show={mostrarFormulario && rol === 'admin'} onHide={cerrarFormulario} centered>
+      <Modal
+        show={mostrarFormulario && rol === 'admin'}
+        onHide={cerrarFormulario}
+        centered
+        className="scp-product-modal"
+      >
         <Modal.Header closeButton>
-          <Modal.Title>{productoEditando !== null ? 'Editar SCP' : 'Agregar SCP'}</Modal.Title>
+          <Modal.Title>
+            {productoEditando !== null
+              ? 'Editar SCP'
+              : 'Agregar SCP'}
+          </Modal.Title>
         </Modal.Header>
+
         <Modal.Body>
           <ProductForm
             product={nuevoProducto}

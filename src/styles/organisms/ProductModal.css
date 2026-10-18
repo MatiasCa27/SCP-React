@@ -1,0 +1,15 @@
+.scp-product-modal .modal-content {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 0;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.scp-product-modal .modal-header {
+  border-bottom: 1px solid #888888;
+}
+
+.scp-product-modal .btn-close {
+  filter: invert(1);
+}

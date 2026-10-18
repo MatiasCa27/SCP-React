@@ -1,6 +1,7 @@
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../atoms/Button';
+import '../../styles/organisms/Navbar.css';
 
 function NavBar() {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ function NavBar() {
   };
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg">
+    <Navbar variant="dark" expand="lg" className="scp-navbar">
       <Container>
         <Navbar.Brand as={Link} to="/products">Insurgencia del Caos</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
