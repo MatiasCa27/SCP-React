@@ -9,7 +9,7 @@ function RegisterForm({ usuario, password, setUsuario, setPassword, handleSubmit
       <FormField label="Usuario" type="text" placeholder="Ingrese un usuario" value={usuario} onChange={(e) => setUsuario(e.target.value)} required />
       <PasswordField label="Contraseña" placeholder="Ingrese una contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
       <Button type="submit">Registrarse</Button>
-      <Button variant="secondary" className="ms-2" onClick={volver}>Volver</Button>
+      <Button type="button" variant="secondary" className="ms-2" onClick={volver}>Volver</Button>
     </Form>
   );
 }

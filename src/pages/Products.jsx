@@ -1,4 +1,4 @@
-import { Container, Row } from 'react-bootstrap';
+import { Container, Row, Modal } from 'react-bootstrap';
 import { useState } from 'react';
 import products from '../data/Products';
 import ProductCard from '../components/organisms/ProductCard';
@@ -13,12 +13,18 @@ function Products() {
   const [productoEditando, setProductoEditando] = useState(null);
   const [nuevoProducto, setNuevoProducto] = useState({ name: '', description: '', price: '', stock: '', image: '' });
 
+  const cerrarFormulario = () => {
+    setMostrarFormulario(false);
+    setProductoEditando(null);
+    setNuevoProducto({ name: '', description: '', price: '', stock: '', image: '' });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (rol !== 'admin') return;
 
-    if (Number(nuevoProducto.price) < 0 || Number(nuevoProducto.stock) < 0) {
-      alert('El precio y el stock no pueden ser negativos');
+    if (nuevoProducto.price === '' || nuevoProducto.stock === '' || !Number.isFinite(Number(nuevoProducto.price)) || !Number.isFinite(Number(nuevoProducto.stock)) || Number(nuevoProducto.price) <= 0 || Number(nuevoProducto.stock) < 0) {
+      alert('El precio debe ser mayor que 0 y el stock no puede ser negativo');
       return;
     }
 
@@ -69,9 +75,7 @@ function Products() {
       alert('SCP agregado correctamente');
     }
 
-    setNuevoProducto({ name: '', description: '', price: '', stock: '', image: '' });
-    setProductoEditando(null);
-    setMostrarFormulario(false);
+    cerrarFormulario();
   };
 
   const cambiarStock = (id, cantidad) => {
@@ -125,37 +129,31 @@ function Products() {
     }
 
     if (productoEditando === id) {
-      setProductoEditando(null);
-      setMostrarFormulario(false);
-      setNuevoProducto({ name: '', description: '', price: '', stock: '', image: '' });
+      cerrarFormulario();
     }
   };
 
   const editarProducto = (product) => {
+    if (rol !== 'admin') return;
     setNuevoProducto({ ...product });
     setProductoEditando(product.id);
     setMostrarFormulario(true);
   };
 
-  const alternarFormulario = () => {
-    setMostrarFormulario(!mostrarFormulario);
-    setProductoEditando(null);
+  const agregarProducto = () => {
+    if (rol !== 'admin') return;
     setNuevoProducto({ name: '', description: '', price: '', stock: '', image: '' });
+    setProductoEditando(null);
+    setMostrarFormulario(true);
   };
 
   return (
     <Container className="my-5">
       <h1>Productos</h1>
       {rol === 'admin' && (
-        <>
-          <Button onClick={alternarFormulario}>
-            {mostrarFormulario ? 'Cancelar' : '+ Agregar SCP'}
-          </Button>
-          {mostrarFormulario && (
-            <ProductForm product={nuevoProducto} setProduct={setNuevoProducto} handleSubmit={handleSubmit} />
-          )}
-        </>
+        <Button onClick={agregarProducto}>+ Agregar SCP</Button>
       )}
+
       <Row>
         {listaProductos.map((product) => (
           <ProductCard
@@ -167,6 +165,19 @@ function Products() {
           />
         ))}
       </Row>
+
+      <Modal show={mostrarFormulario && rol === 'admin'} onHide={cerrarFormulario} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>{productoEditando !== null ? 'Editar SCP' : 'Agregar SCP'}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ProductForm
+            product={nuevoProducto}
+            setProduct={setNuevoProducto}
+            handleSubmit={handleSubmit}
+          />
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 }

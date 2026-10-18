@@ -13,11 +13,10 @@ function App() {
   return (
     <>
       {!['/', '/login', '/register'].includes(location.pathname) && <NavBar />}
-
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/products" element={<ProtectedRoute><Products /> </ProtectedRoute>} />
-        <Route path="/products/:id" element={<ProtectedRoute><ProductDetail /> </ProtectedRoute>} />
+        <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
+        <Route path="/products/:id" element={<ProtectedRoute><ProductDetail /></ProtectedRoute>} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>

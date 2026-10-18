@@ -9,27 +9,28 @@ function Login() {
   const [password, setPassword] = useState('');
 
   const handleSubmit = (e) => {
-  e.preventDefault();
-  if (usuario === 'admin' && password === 'admin123') {
-    sessionStorage.setItem('usuario', usuario);
-    sessionStorage.setItem('rol', 'admin');
-    navigate('/admin');
-    return;
-  }
+    e.preventDefault();
 
-  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-  const usuarioEncontrado = usuarios.find(
-    (u) => u.usuario === usuario && u.password === password
-  );
+    if (usuario === 'admin' && password === 'admin123') {
+      sessionStorage.setItem('usuario', usuario);
+      sessionStorage.setItem('rol', 'admin');
+      navigate('/products');
+      return;
+    }
 
-  if (usuarioEncontrado) {
-    sessionStorage.setItem('usuario', usuario);
-    sessionStorage.setItem('rol', 'usuario');
-    navigate('/products');
-  } else {
-    alert('Usuario o contraseña incorrectos');
-  }
-};
+    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+    const usuarioEncontrado = usuarios.find(
+      (u) => u.usuario === usuario && u.password === password
+    );
+
+    if (usuarioEncontrado) {
+      sessionStorage.setItem('usuario', usuario);
+      sessionStorage.setItem('rol', 'usuario');
+      navigate('/products');
+    } else {
+      alert('Usuario o contraseña incorrectos');
+    }
+  };
 
   return (
     <Container className="my-5">

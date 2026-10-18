@@ -1,5 +1,6 @@
-import { Container, Button } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import Button from '../components/atoms/Button';
 
 function Home() {
   const navigate = useNavigate();

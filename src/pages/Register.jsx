@@ -7,12 +7,19 @@ function Register() {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState('');
   const [password, setPassword] = useState('');
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const nombreUsuario = usuario.trim();
+
+    if (!nombreUsuario) {
+      alert('Ingrese un nombre de usuario válido');
+      return;
+    }
+
     const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-    const existe = usuarios.some((u) => u.usuario === usuario || usuario === 'admin');
+    const existe = usuarios.some((u) => u.usuario === nombreUsuario) || nombreUsuario === 'admin';
 
     if (existe) {
       alert('Este usuario ya existe');
@@ -20,12 +27,11 @@ function Register() {
     }
 
     const nuevoUsuario = {
-      usuario: usuario,
+      usuario: nombreUsuario,
       password: password
     };
 
     usuarios.push(nuevoUsuario);
-
     localStorage.setItem('usuarios', JSON.stringify(usuarios));
 
     alert('Usuario registrado correctamente');
