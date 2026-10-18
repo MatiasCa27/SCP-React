@@ -5,7 +5,6 @@ import Store from './pages/Store';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
 import Login from './pages/Login';
-import Admin from './pages/Admin';
 import Register from './pages/Register';
 import ProtectedRoute from './components/templates/ProtectedRoute';
 
@@ -23,7 +22,6 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/store" element={<ProtectedRoute><Store /> </ProtectedRoute >} />
-        <Route path="/admin" element={<ProtectedRoute rolPermitido="admin"><Admin /> </ProtectedRoute >} />
       </Routes>
     </>
   );

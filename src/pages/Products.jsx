@@ -4,7 +4,7 @@ import products from '../data/Products';
 import ProductCard from '../components/organisms/ProductCard';
 import Button from '../components/atoms/Button';
 import ProductForm from '../components/organisms/ProductForm';
-import { obtenerProductos } from '../utils/productUtil';
+import { obtenerProductos } from '../utils/productUtils';
 
 function Products() {
   const [listaProductos, setListaProductos] = useState(obtenerProductos);

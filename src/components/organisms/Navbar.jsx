@@ -1,10 +1,9 @@
 import { Navbar, Nav, Container } from 'react-bootstrap';
-import Button from '../atoms/Button';
 import { Link, useNavigate } from 'react-router-dom';
+import Button from '../atoms/Button';
 
 function NavBar() {
   const navigate = useNavigate();
-  const rol = sessionStorage.getItem('rol');
 
   const cerrarSesion = () => {
     sessionStorage.removeItem('usuario');
@@ -20,7 +19,6 @@ function NavBar() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/products">Productos</Nav.Link>
-            {rol === 'admin' && <Nav.Link as={Link} to="/admin">Administración</Nav.Link>}
           </Nav>
           <Button variant="outline-light" onClick={cerrarSesion}>Cerrar sesión</Button>
         </Navbar.Collapse>
