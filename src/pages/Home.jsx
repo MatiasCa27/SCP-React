@@ -10,7 +10,6 @@ function Home() {
   return (
     <>
       <Header />
-
       <Container className="my-5 text-center scp-page">
         <Image
           src="/images/logo.webp"

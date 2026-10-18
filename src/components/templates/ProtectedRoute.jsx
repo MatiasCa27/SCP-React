@@ -1,15 +1,10 @@
 import { Navigate } from 'react-router-dom';
 
-function ProtectedRoute({ children, rolPermitido }) {
+function ProtectedRoute({ children }) {
   const usuario = sessionStorage.getItem('usuario');
-  const rol = sessionStorage.getItem('rol');
 
   if (!usuario) {
     return <Navigate to="/" replace />;
-  }
-
-  if (rolPermitido && rol !== rolPermitido) {
-    return <Navigate to="/products" replace />;
   }
 
   return children;
