@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import RegisterForm from '../components/organisms/RegisterForm';
+import AuthForm from '../components/organisms/AuthForm';
 
 function Register() {
   const navigate = useNavigate();
@@ -49,13 +49,14 @@ function Register() {
   return (
     <Container className="my-5 scp-page">
       <h1>Registrarse</h1>
-      <RegisterForm
+      <AuthForm
         usuario={usuario}
         password={password}
         setUsuario={setUsuario}
         setPassword={setPassword}
         handleSubmit={handleSubmit}
         volver={() => navigate('/')}
+        registro
       />
     </Container>
   );

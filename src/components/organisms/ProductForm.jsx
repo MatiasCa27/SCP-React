@@ -1,5 +1,6 @@
 import { Form } from 'react-bootstrap';
 import FormField from '../molecules/FormField';
+import Input from '../atoms/Input';
 import Button from '../atoms/Button';
 import '../../styles/organisms/ProductForm.css';
 
@@ -31,13 +32,12 @@ function ProductForm({ product, setProduct, handleSubmit }) {
 
       <Form.Group className="mb-3">
         <Form.Label>Descripción detallada</Form.Label>
-        <Form.Control
+        <Input
           as="textarea"
           rows={5}
           name="longDescription"
           value={product.longDescription ?? ''}
           onChange={handleChange}
-          className="scp-input"
           placeholder="Ingrese una descripción completa del SCP"
           required
         />
