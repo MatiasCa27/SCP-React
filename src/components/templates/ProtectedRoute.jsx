@@ -9,7 +9,7 @@ function ProtectedRoute({ children, rolPermitido }) {
   }
 
   if (rolPermitido && rol !== rolPermitido) {
-    return <Navigate to="/store" replace />;
+    return <Navigate to="/products" replace />;
   }
 
   return children;
