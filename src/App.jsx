@@ -7,11 +7,9 @@ import ProductDetail from './pages/ProductDetail';
 import AboutUs from './pages/AboutUs';
 import Navbar from './components/organisms/Navbar';
 import Footer from './components/organisms/Footer';
-import ProtectedRoute from './components/templates/ProtectedRoute';
 
 function App() {
   const location = useLocation();
-
   const usuarioAutenticado = !!sessionStorage.getItem('usuario');
 
   const mostrarNavbar =
@@ -22,18 +20,16 @@ function App() {
   return (
     <div className="scp-app-layout">
       {mostrarNavbar && <Navbar />}
-
       <main className="scp-main">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/about-us" element={<AboutUs />} />
-          <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>}/>
-          <Route path="/products/:id" element={<ProtectedRoute><ProductDetail /></ProtectedRoute>}/>
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
         </Routes>
       </main>
-
       <Footer />
     </div>
   );
