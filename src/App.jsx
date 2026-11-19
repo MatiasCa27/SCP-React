@@ -5,6 +5,7 @@ import Register from './pages/Register';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
 import AboutUs from './pages/AboutUs';
+import NotFound from './pages/NotFound';
 import Navbar from './components/organisms/Navbar';
 import Footer from './components/organisms/Footer';
 
@@ -28,6 +29,7 @@ function App() {
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
