@@ -1,24 +1,33 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Products from '../../pages/Products';
-import products from '../../data/products';
 
 describe('Products Page', () => {
-  const claves = [
-    'productos',
-    'stockOriginales',
-    'productosEliminados',
-    'productosEditados'
-  ];
+  const scp = {
+    id: 21,
+    nombre: 'SCP-Prueba',
+    descripcion: 'Descripción de prueba',
+    categoria: 'Safe',
+    precio: 10000,
+    stock: 5
+  };
+
+  const respuesta = (body, status = 200) => Promise.resolve({
+    ok: status >= 200 && status < 300,
+    status,
+    json: () => Promise.resolve(body),
+    text: () => Promise.resolve('')
+  });
+
+  let fetchSpy;
 
   beforeEach(() => {
-    claves.forEach((clave) => localStorage.removeItem(clave));
     sessionStorage.clear();
     spyOn(window, 'alert');
+    fetchSpy = spyOn(window, 'fetch').and.returnValue(respuesta([]));
   });
 
   afterEach(() => {
-    claves.forEach((clave) => localStorage.removeItem(clave));
     sessionStorage.clear();
   });
 
@@ -30,24 +39,22 @@ describe('Products Page', () => {
     );
   };
 
-  it('permite al administrador agregar un SCP', async () => {
+  it('carga el catálogo desde la API y permite crear un SCP', async () => {
     sessionStorage.setItem('usuario', 'admin');
     sessionStorage.setItem('rol', 'admin');
+    fetchSpy.and.returnValues(respuesta([]), respuesta(scp, 201));
 
     mostrarProductos();
-
+    await screen.findByText('No hay SCP para mostrar.');
     fireEvent.click(screen.getByRole('button', { name: '+ Agregar SCP' }));
 
-    const modal = await screen.findByRole('dialog');
-    const formulario = modal.querySelector('form');
-
+    const formulario = (await screen.findByRole('dialog')).querySelector('form');
     const campos = {
       name: 'SCP-Prueba',
       description: 'Descripción de prueba',
-      longDescription: 'Descripción detallada de prueba',
+      category: 'Safe',
       price: '10000',
-      stock: '5',
-      image: '/images/prueba.webp'
+      stock: '5'
     };
 
     Object.entries(campos).forEach(([nombre, valor]) => {
@@ -58,53 +65,53 @@ describe('Products Page', () => {
 
     fireEvent.submit(formulario);
 
-    const guardados = JSON.parse(localStorage.getItem('productos'));
-    const agregado = guardados.find((producto) => producto.name === 'SCP-Prueba');
-
-    expect(agregado).toBeTruthy();
-    expect(agregado.price).toBe(10000);
-    expect(agregado.stock).toBe(5);
+    expect(await screen.findByText('SCP-Prueba')).toBeTruthy();
+    const [url, options] = fetchSpy.calls.mostRecent().args;
+    expect(url).toContain('/api/v1/scps');
+    expect(options.method).toBe('POST');
+    expect(JSON.parse(options.body)).toEqual({
+      nombre: 'SCP-Prueba',
+      descripcion: 'Descripción de prueba',
+      categoria: 'Safe',
+      precio: 10000,
+      stock: 5
+    });
   });
 
-  it('permite al administrador editar un SCP original', async () => {
+  it('actualiza el SCP usando PUT', async () => {
     sessionStorage.setItem('usuario', 'admin');
     sessionStorage.setItem('rol', 'admin');
+    const actualizado = { ...scp, nombre: 'SCP-Prueba editado' };
+    fetchSpy.and.returnValues(respuesta([scp]), respuesta(actualizado));
 
     mostrarProductos();
+    fireEvent.click(await screen.findByRole('button', { name: 'Editar SCP' }));
 
-    fireEvent.click(screen.getAllByRole('button', { name: 'Editar SCP' })[0]);
-
-    const modal = await screen.findByRole('dialog');
-    const formulario = modal.querySelector('form');
-    const nuevoNombre = 'SCP-262 actualizado';
-
+    const formulario = (await screen.findByRole('dialog')).querySelector('form');
     fireEvent.change(formulario.querySelector('[name="name"]'), {
-      target: { value: nuevoNombre }
+      target: { value: actualizado.nombre }
     });
-
     fireEvent.submit(formulario);
 
-    const editados = JSON.parse(localStorage.getItem('productosEditados'));
-    const editado = editados.find((producto) => producto.id === products[0].id);
-
-    expect(editado).toBeTruthy();
-    expect(editado.name).toBe(nuevoNombre);
-    expect(window.alert).toHaveBeenCalledWith('SCP actualizado correctamente');
+    expect(await screen.findByText(actualizado.nombre)).toBeTruthy();
+    expect(fetchSpy.calls.mostRecent().args[1].method).toBe('PUT');
+    expect(fetchSpy.calls.mostRecent().args[0]).toContain('/api/v1/scps/21');
   });
 
-  it('descuenta el stock cuando un usuario compra un SCP', () => {
+  it('actualiza el stock del servidor al comprar un SCP', async () => {
     sessionStorage.setItem('usuario', 'usuario1');
     sessionStorage.setItem('rol', 'usuario');
+    fetchSpy.and.returnValues(
+      respuesta([scp]),
+      respuesta({ ...scp, stock: 4 })
+    );
 
     mostrarProductos();
+    fireEvent.click(await screen.findByRole('button', { name: 'Comprar' }));
 
-    fireEvent.click(screen.getAllByRole('button', { name: 'Comprar' })[0]);
-
-    const stocks = JSON.parse(localStorage.getItem('stockOriginales'));
-    const stockActualizado = stocks.find((item) => item.id === products[0].id);
-
-    expect(stockActualizado).toBeTruthy();
-    expect(stockActualizado.stock).toBe(products[0].stock - 1);
+    expect(await screen.findByText('Stock disponible: 4')).toBeTruthy();
+    expect(fetchSpy.calls.mostRecent().args[1].method).toBe('PATCH');
+    expect(JSON.parse(fetchSpy.calls.mostRecent().args[1].body)).toEqual({ cantidad: -1 });
     expect(window.alert).toHaveBeenCalledWith('Producto comprado exitosamente');
   });
 });

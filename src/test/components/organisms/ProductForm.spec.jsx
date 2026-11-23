@@ -5,10 +5,9 @@ describe('ProductForm Component', () => {
   const producto = {
     name: 'SCP-262',
     description: 'Un abrigo anómalo',
-    longDescription: 'Descripción completa del SCP',
+    category: 'Safe',
     price: 15000,
-    stock: 5,
-    image: '/images/scp-262.webp'
+    stock: 5
   };
 
   it('muestra todos los campos del formulario', () => {
@@ -22,13 +21,12 @@ describe('ProductForm Component', () => {
 
     expect(screen.getByText('Nombre del SCP')).toBeTruthy();
     expect(screen.getByText('Descripción corta')).toBeTruthy();
-    expect(screen.getByText('Descripción detallada')).toBeTruthy();
+    expect(screen.getByText('Categoría')).toBeTruthy();
     expect(screen.getByText('Precio')).toBeTruthy();
     expect(screen.getByText('Stock inicial')).toBeTruthy();
-    expect(screen.getByText('URL de la imagen')).toBeTruthy();
 
     expect(container.querySelectorAll('input').length).toBe(5);
-    expect(container.querySelector('textarea')).toBeTruthy();
+    expect(container.querySelector('textarea')).toBeNull();
   });
 
   it('actualiza los datos cuando se modifica un campo', () => {
@@ -70,7 +68,7 @@ describe('ProductForm Component', () => {
     const formulario = container.querySelector('form');
 
     expect(precio.type).toBe('number');
-    expect(precio.min).toBe('1');
+    expect(precio.min).toBe('0');
     expect(stock.type).toBe('number');
     expect(stock.min).toBe('0');
 

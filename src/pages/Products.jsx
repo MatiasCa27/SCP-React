@@ -1,28 +1,58 @@
-import { Container, Row, Modal } from 'react-bootstrap';
-import { useState } from 'react';
-import products from '../data/products';
+import { useEffect, useState } from 'react';
+import { Alert, Container, Modal, Row } from 'react-bootstrap';
 import ProductCard from '../components/organisms/ProductCard';
 import Button from '../components/atoms/Button';
 import ProductForm from '../components/organisms/ProductForm';
-import { obtenerProductos } from '../utils/productUtils';
+import {
+  actualizarProducto,
+  actualizarStock,
+  crearProducto,
+  eliminarProducto as eliminarProductoApi,
+  obtenerProductos
+} from '../utils/productUtils';
 import '../styles/organisms/ProductModal.css';
 
 const PRODUCTO_VACIO = {
   name: '',
   description: '',
-  longDescription: '',
+  category: '',
   price: '',
-  stock: '',
-  image: ''
+  stock: ''
 };
 
+function mensajeDeError(error) {
+  return error instanceof Error ? error.message : 'Ocurrió un error inesperado.';
+}
+
 function Products() {
-  const [listaProductos, setListaProductos] = useState(obtenerProductos);
+  const [listaProductos, setListaProductos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [guardando, setGuardando] = useState(false);
+  const [error, setError] = useState('');
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
   const [nuevoProducto, setNuevoProducto] = useState({ ...PRODUCTO_VACIO });
 
   const rol = sessionStorage.getItem('rol');
+
+  useEffect(() => {
+    let activo = true;
+
+    obtenerProductos()
+      .then((productos) => {
+        if (activo) setListaProductos(productos);
+      })
+      .catch((fetchError) => {
+        if (activo) setError(`No se pudieron cargar los SCP: ${mensajeDeError(fetchError)}`);
+      })
+      .finally(() => {
+        if (activo) setCargando(false);
+      });
+
+    return () => {
+      activo = false;
+    };
+  }, []);
 
   const cerrarFormulario = () => {
     setMostrarFormulario(false);
@@ -30,9 +60,9 @@ function Products() {
     setNuevoProducto({ ...PRODUCTO_VACIO });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (rol !== 'admin') return;
+    if (rol !== 'admin' || guardando) return;
 
     const precio = Number(nuevoProducto.price);
     const stock = Number(nuevoProducto.stock);
@@ -40,129 +70,97 @@ function Products() {
     if (
       nuevoProducto.price === '' ||
       nuevoProducto.stock === '' ||
-      !Number.isFinite(precio) ||
+      !Number.isInteger(precio) ||
       !Number.isInteger(stock) ||
-      precio <= 0 ||
+      precio < 0 ||
       stock < 0
     ) {
-      alert('El precio debe ser mayor que 0 y el stock debe ser un número entero no negativo');
+      setError('El precio y el stock deben ser números enteros no negativos.');
       return;
     }
 
-    if (productoEditando !== null) {
-      const productoActualizado = {
-        ...nuevoProducto,
-        id: productoEditando,
-        price: precio,
-        stock
-      };
+    setGuardando(true);
+    setError('');
 
-      const productosActualizados = listaProductos.map((product) =>
-        product.id === productoEditando ? productoActualizado : product
-      );
-
-      if (products.some((product) => product.id === productoEditando)) {
-        const productosEditados = JSON.parse(localStorage.getItem('productosEditados')) || [];
-
-        localStorage.setItem(
-          'productosEditados',
-          JSON.stringify([
-            ...productosEditados.filter((product) => product.id !== productoEditando),
-            productoActualizado
-          ])
+    try {
+      if (productoEditando !== null) {
+        const productoActualizado = await actualizarProducto(productoEditando, nuevoProducto);
+        setListaProductos((productos) =>
+          productos.map((product) =>
+            product.id === productoEditando ? productoActualizado : product
+          )
         );
+        alert('SCP actualizado correctamente');
+      } else {
+        const productoCreado = await crearProducto(nuevoProducto);
+        setListaProductos((productos) => [...productos, productoCreado]);
+        alert('SCP agregado correctamente');
       }
 
-      guardarStock(productosActualizados);
-      alert('SCP actualizado correctamente');
-   
-    } else {
-      const nuevoId = Math.max(0, ...products.map((product) => product.id), ...listaProductos.map((product) => product.id)) + 1;
-      const productoAgregado = {
-        ...nuevoProducto,
-        id: nuevoId,
-        price: precio,
-        stock
-      };
-
-      guardarStock([...listaProductos, productoAgregado]);
-      alert('SCP agregado correctamente');
+      cerrarFormulario();
+    } catch (requestError) {
+      setError(`No se pudo guardar el SCP: ${mensajeDeError(requestError)}`);
+    } finally {
+      setGuardando(false);
     }
-
-    cerrarFormulario();
   };
 
-  const guardarStock = (productosActualizados) => {
-    const productosGuardados = productosActualizados.filter(
-      (product) => !products.some((original) => original.id === product.id)
-    );
-
-    const stockOriginales = productosActualizados
-      .filter((product) => products.some((original) => original.id === product.id))
-      .map((product) => ({ id: product.id, stock: product.stock }));
-
-    localStorage.setItem('productos', JSON.stringify(productosGuardados));
-    localStorage.setItem('stockOriginales', JSON.stringify(stockOriginales));
-    setListaProductos(productosActualizados);
-  };
-
-  const cambiarStock = (id, cantidad) => {
+  const cambiarStock = async (id, cantidad) => {
     if (rol !== 'admin') return;
 
-    const productosActualizados = listaProductos.map((product) =>
-      product.id === id
-        ? { ...product, stock: Math.max(0, (product.stock ?? 0) + cantidad) }
-        : product
-    );
-
-    guardarStock(productosActualizados);
+    setError('');
+    try {
+      const productoActualizado = await actualizarStock(id, cantidad);
+      setListaProductos((productos) =>
+        productos.map((product) => product.id === id ? productoActualizado : product)
+      );
+    } catch (requestError) {
+      setError(`No se pudo actualizar el stock: ${mensajeDeError(requestError)}`);
+    }
   };
 
-  const comprarProducto = (id) => {
+  const comprarProducto = async (id) => {
     if (rol !== 'usuario' || !sessionStorage.getItem('usuario')) return;
 
-    const producto = listaProductos.find((product) => product.id === id);
+    const producto = listaProductos.find((item) => item.id === id);
     if (!producto || producto.stock <= 0) return;
 
-    const productosActualizados = listaProductos.map((product) =>
-      product.id === id
-        ? { ...product, stock: product.stock - 1 }
-        : product
-    );
-
-    guardarStock(productosActualizados);
-    alert('Producto comprado exitosamente');
+    setError('');
+    try {
+      const productoActualizado = await actualizarStock(id, -1);
+      setListaProductos((productos) =>
+        productos.map((item) => item.id === id ? productoActualizado : item)
+      );
+      alert('Producto comprado exitosamente');
+    } catch (requestError) {
+      setError(`No se pudo completar la compra: ${mensajeDeError(requestError)}`);
+    }
   };
 
-  const eliminarProducto = (id) => {
+  const eliminarProducto = async (id) => {
     if (rol !== 'admin') return;
     if (!window.confirm('¿Estás seguro de eliminar este SCP?')) return;
 
-    const productosActualizados = listaProductos.filter((product) => product.id !== id);
-    guardarStock(productosActualizados);
-
-    if (products.some((product) => product.id === id)) {
-      const eliminados = JSON.parse(localStorage.getItem('productosEliminados')) || [];
-
-      if (!eliminados.includes(id)) {
-        localStorage.setItem('productosEliminados', JSON.stringify([...eliminados, id]));
-      }
-
-      const productosEditados = JSON.parse(localStorage.getItem('productosEditados')) || [];
-
-      localStorage.setItem(
-        'productosEditados',
-        JSON.stringify(productosEditados.filter((product) => product.id !== id))
-      );
+    setError('');
+    try {
+      await eliminarProductoApi(id);
+      setListaProductos((productos) => productos.filter((product) => product.id !== id));
+      if (productoEditando === id) cerrarFormulario();
+    } catch (requestError) {
+      setError(`No se pudo eliminar el SCP: ${mensajeDeError(requestError)}`);
     }
-
-    if (productoEditando === id) cerrarFormulario();
   };
 
   const editarProducto = (product) => {
     if (rol !== 'admin') return;
 
-    setNuevoProducto({ ...product });
+    setNuevoProducto({
+      name: product.name,
+      description: product.description,
+      category: product.category,
+      price: product.price,
+      stock: product.stock
+    });
     setProductoEditando(product.id);
     setMostrarFormulario(true);
   };
@@ -179,22 +177,29 @@ function Products() {
     <Container className="my-5 scp-page">
       <h1>Productos</h1>
 
+      {error && <Alert variant="danger" role="alert">{error}</Alert>}
+
       {rol === 'admin' && (
         <Button onClick={agregarProducto}>+ Agregar SCP</Button>
       )}
 
-      <Row>
-        {listaProductos.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            cambiarStock={cambiarStock}
-            eliminarProducto={eliminarProducto}
-            editarProducto={editarProducto}
-            comprarProducto={comprarProducto}
-          />
-        ))}
-      </Row>
+      {cargando ? (
+        <p role="status">Cargando SCP...</p>
+      ) : (
+        <Row>
+          {listaProductos.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              cambiarStock={cambiarStock}
+              eliminarProducto={eliminarProducto}
+              editarProducto={editarProducto}
+              comprarProducto={comprarProducto}
+            />
+          ))}
+          {listaProductos.length === 0 && !error && <p>No hay SCP para mostrar.</p>}
+        </Row>
+      )}
 
       <Modal
         show={mostrarFormulario && rol === 'admin'}
@@ -213,6 +218,7 @@ function Products() {
             product={nuevoProducto}
             setProduct={setNuevoProducto}
             handleSubmit={handleSubmit}
+            submitting={guardando}
           />
         </Modal.Body>
       </Modal>

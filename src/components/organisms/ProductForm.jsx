@@ -1,10 +1,9 @@
 import { Form } from 'react-bootstrap';
 import FormField from '../molecules/FormField';
-import Input from '../atoms/Input';
 import Button from '../atoms/Button';
 import '../../styles/organisms/ProductForm.css';
 
-function ProductForm({ product, setProduct, handleSubmit }) {
+function ProductForm({ product, setProduct, handleSubmit, submitting = false }) {
   const handleChange = (e) => {
     setProduct({
       ...product,
@@ -27,27 +26,23 @@ function ProductForm({ product, setProduct, handleSubmit }) {
         name="description"
         value={product.description}
         onChange={handleChange}
+        maxLength={500}
         required
       />
 
-      <Form.Group className="mb-3">
-        <Form.Label>Descripción detallada</Form.Label>
-        <Input
-          as="textarea"
-          rows={5}
-          name="longDescription"
-          value={product.longDescription ?? ''}
-          onChange={handleChange}
-          placeholder="Ingrese una descripción completa del SCP"
-          required
-        />
-      </Form.Group>
+      <FormField
+        label="Categoría"
+        name="category"
+        value={product.category}
+        onChange={handleChange}
+        required
+      />
 
       <FormField
         label="Precio"
         type="number"
         name="price"
-        min="1"
+        min="0"
         value={product.price}
         onChange={handleChange}
         required
@@ -63,16 +58,8 @@ function ProductForm({ product, setProduct, handleSubmit }) {
         required
       />
 
-      <FormField
-        label="URL de la imagen"
-        name="image"
-        value={product.image}
-        onChange={handleChange}
-        required
-      />
-
-      <Button type="submit">
-        Guardar SCP
+      <Button type="submit" disabled={submitting}>
+        {submitting ? 'Guardando...' : 'Guardar SCP'}
       </Button>
     </Form>
   );
